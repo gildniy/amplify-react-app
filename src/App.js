@@ -46,6 +46,8 @@ function App() {
         .then(user => console.log('user info: ', user))
         .catch(err => console.log('error finding user: ', err));
 
+    getData();
+
     const subscription = API.graphql(graphqlOperation(OnCreateTalk)).subscribe({
       next: (eventData) => {
         const talk = eventData.value.data.onCreateTalk;
@@ -58,8 +60,8 @@ function App() {
 
   async function getData() {
     try {
-      const talkData = await API.graphql(graphqlOperation(ListTalks))
-      console.log('data from API: ', talkData)
+        const talkData = await API.graphql(graphqlOperation(ListTalks));
+        console.log('data from API: ', talkData);
       dispatch({type: 'SET_TALKS', talks: talkData.data.listTalks.items})
     } catch (err) {
       console.log('error fetching data..', err)
@@ -67,17 +69,17 @@ function App() {
   }
 
   async function createTalk() {
-    const {name, description, speakerBio, speakerName} = state
+      const {name, description, speakerBio, speakerName} = state;
     if (name === '' || description === '' ||
-        speakerBio === '' || speakerName === '') return
+        speakerBio === '' || speakerName === '') return;
 
-    const talk = {name, description, speakerBio, speakerName, clientId: CLIENT_ID}
-    const talks = [...state.talks, talk]
-    dispatch({type: 'SET_TALKS', talks})
-    dispatch({type: 'CLEAR_INPUT'})
+      const talk = {name, description, speakerBio, speakerName, clientId: CLIENT_ID};
+      const talks = [...state.talks, talk];
+      dispatch({type: 'SET_TALKS', talks});
+      dispatch({type: 'CLEAR_INPUT'});
 
     try {
-      await API.graphql(graphqlOperation(CreateTalk, {input: talk}))
+        await API.graphql(graphqlOperation(CreateTalk, {input: talk}));
       console.log('item created!')
     } catch (err) {
       console.log('error creating talk...', err)
